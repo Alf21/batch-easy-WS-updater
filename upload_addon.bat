@@ -1,6 +1,6 @@
 @ECHO off
 
-SETLOCAL
+SETLOCAL ENABLEDELAYEDEXPANSION
 
 SET curPath=%1
 SET mypath=%~dp0
@@ -20,7 +20,7 @@ CALL %scriptPath%\addon_data.bat
 CALL SET wsid=%%%name%%%
 
 rem check for problem
-IF [%wsid%] == [] ECHO "Please insert an ID into 'addon_data.bat' for %name% (SET %name%=...)" & GOTO End
+IF NOT [%wsid%] == [] ECHO "Already uploaded '%name%'!" & GOTO End
 
 CALL SET typeTmp=%%type_%name%%%
 
@@ -42,17 +42,13 @@ CALL %scriptPath%\createAddonJson.bat %addonJson% %name% %type%
 SET oldDir=%CD%
 
 rem send some information
-ECHO "updating %name% (%curPath%) with id %wsid%..."
+ECHO "uploading %name% (%curPath%)"
 
 SET gma=%curPath%\%name%.gma
+
 CD /d D:\Programme\steamapps\common\GarrysMod\bin
 
-rem ask for changes input
-SET/P changes=Please enter the changes: 
-
-IF EXIST %gma% DEL %gma%
-
-IF EXIST %gma% ECHO "There is a problem with the deletion of the gma '%gma%'..." & GOTO End
+IF EXIST %gma% ECHO "Found gma '%gma%'... Maybe this addon is uploaded already?" & GOTO End
 
 rem create .gma file
 gmad.exe create -folder %curPath% -out %gma%
@@ -60,10 +56,26 @@ gmad.exe create -folder %curPath% -out %gma%
 SET icon=%oldDir%\ws_icons\%name%.jpg
 
 rem upload .gma file
-IF EXIST %icon% (
-	gmpublish.exe update -addon "%gma%" -id "%wsid%" -changes "%changes%" -icon "%icon%"
-) ELSE (
-	gmpublish.exe update -addon "%gma%" -id "%wsid%" -changes "%changes%"
+IF NOT EXIST %icon% ECHO "Couldn't upload addon '%name%' because of missing ws-icon!" & GOTO End
+
+SET tmpFile=%scriptPath%\temp.txt
+
+gmpublish.exe create -addon "%gma%" -icon "%icon%" > %tmpFile%
+
+IF NOT EXIST %tmpFile% ECHO "Couldn't create file '%tmpFile%'!" & GOTO End
+
+rem fetch / parse ws-UID
+FOR /f "tokens=*" %%A IN (%tmpFile%) DO (
+	SET strTmp=%%A
+
+	ECHO "%%A"| findstr /b /r ".UID" > NUL && (
+		SET str="%%A"
+		SET mUID=!str:~6,-1!
+		
+		ECHO set %name%=!mUID! >> %scriptPath%\addon_data.bat
+		
+		DEL %tmpFile%
+	)
 )
 
 :End
