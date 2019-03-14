@@ -1,0 +1,13 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\Directory\shell\WSMenu]
+"MUIVerb"="WS Menu"
+"SubCommands"="update_addon"
+"Icon"="%SystemRoot%\\System32\\shell32.dll,71"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\update_addon]
+@="&Update WS-Addon"
+"Icon"="%SystemRoot%\\System32\\shell32.dll,71"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\update_addon\command]
+@="\"D:\\Projects\\gmod\\batch-easy-WS-updater\\update_addon.bat\" -d \"%1\""

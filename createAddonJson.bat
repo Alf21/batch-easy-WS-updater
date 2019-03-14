@@ -1,9 +1,10 @@
 @echo off
 set file=%1
 set title=%2
+set type=%3
 @echo {> %file%
 @echo 	"title"		:	"%title%",>> %file%
-@echo 	"type"		:	"ServerContent",>> %file%
+@echo 	"type"		:	%type%,>> %file%
 @echo 	"tags"		:	[ "roleplay", "scenic" ],>> %file%
 @echo 	"ignore"	:>> %file%
 @echo 	[>> %file%
