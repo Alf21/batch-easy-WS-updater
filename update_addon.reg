@@ -2,7 +2,7 @@ Windows Registry Editor Version 5.00
 
 [HKEY_CLASSES_ROOT\Directory\shell\WSMenu]
 "MUIVerb"="WS Menu"
-"SubCommands"="update_addon;upload_addon"
+"SubCommands"="update_addon;upload_addon;recreate_addonjson"
 "Icon"="%SystemRoot%\\System32\\shell32.dll,71"
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\update_addon]
@@ -18,3 +18,10 @@ Windows Registry Editor Version 5.00
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\upload_addon\command]
 @="D:\\Projects\\gmod\\batch-easy-WS-updater\\upload_addon.bat %1"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\recreate_addonjson]
+@="&Recreate WS-Addon-Json"
+"Icon"="%SystemRoot%\\System32\\shell32.dll,71"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\recreate_addonjson\command]
+@="D:\\Projects\\gmod\\batch-easy-WS-updater\\recreate_addonjson.bat %1"
