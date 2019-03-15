@@ -1,6 +1,6 @@
 @ECHO off
 
-SETLOCAL
+SETLOCAL ENABLEDELAYEDEXPANSION
 
 SET curPath=%1
 SET mypath=%~dp0
@@ -32,12 +32,12 @@ IF [%typeTmp%] == [] (
 
 SET addonJson=%curPath%\addon.json
 
-IF EXIST %addonJson% DEL %addonJson%
+IF NOT EXIST %addonJson% (
+	rem create addon.json
+	CALL %scriptPath%\createAddonJson.bat %addonJson% %name% %type%
+)
 
-IF EXIST %addonJson% ECHO "There is a problem with the deletion of the addonJson '%addonJson%'..." & GOTO End
-
-rem create addon.json
-CALL %scriptPath%\createAddonJson.bat %addonJson% %name% %type%
+IF NOT EXIST %addonJson% ECHO "There is a problem with the creation of the addonJson '%addonJson%'..." & GOTO End
 
 SET oldDir=%CD%
 
@@ -48,7 +48,7 @@ SET gma=%curPath%\%name%.gma
 CD /d D:\Programme\steamapps\common\GarrysMod\bin
 
 rem ask for changes input
-SET/P changes=Please enter the changes: 
+SET /P changes=Please enter the changes: 
 
 IF EXIST %gma% DEL %gma%
 
@@ -57,13 +57,16 @@ IF EXIST %gma% ECHO "There is a problem with the deletion of the gma '%gma%'..."
 rem create .gma file
 gmad.exe create -folder %curPath% -out %gma%
 
-SET icon=%oldDir%\ws_icons\%name%.jpg
+SET icon=%curPath%\%name%.jpg
+
+rem maybe this isn't allowed, but idc
+IF NOT EXIST %icon% SET icon=%curPath%\%name%.png
 
 rem upload .gma file
 IF EXIST %icon% (
-	gmpublish.exe update -addon "%gma%" -id "%wsid%" -changes "%changes%" -icon "%icon%"
+	gmpublish.exe update -addon "%gma%" -id "%wsid%" -changes "!changes!" -icon "%icon%"
 ) ELSE (
-	gmpublish.exe update -addon "%gma%" -id "%wsid%" -changes "%changes%"
+	gmpublish.exe update -addon "%gma%" -id "%wsid%" -changes "!changes!"
 )
 
 :End
