@@ -23,6 +23,7 @@ SET tags=%tags:~1,-1%
 @echo 		"todo.txt",>> %file%
 @echo 		"*.gma",>> %file%
 @echo 		"license",>> %file%
+@echo 		"LICENSE",>> %file%
 @echo 		"%name%.png",>> %file%
 @echo 		"%name%.jpg">> %file%
 @echo 	]>> %file%
